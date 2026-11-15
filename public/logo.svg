@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 220 80" width="220" height="80">
+<rect width="220" height="80" rx="14" fill="#FFFBFC"/>
+<!-- Corazón -->
+<g transform="translate(34,40)">
+<path d="M 0 -6 C -8 -16 -22 -16 -22 -4 C -22 6 -8 16 0 22 C 8 16 22 6 22 -4 C 22 -16 8 -16 0 -6 Z" fill="#FFB6C1" stroke="#5A4A6B" stroke-width="2.5"/>
+<path d="M -8 -4 C -12 -8 -16 -8 -16 -2 C -16 4 -8 8 -2 12" fill="#FFD8E0" opacity="0.7"/>
+<!-- Estrella celeste -->
+<path d="M 0 -2 L 2 4 L 8 4 L 3 8 L 5 14 L 0 10 L -5 14 L -3 8 L -8 4 L -2 4 Z" fill="#87CEEB" transform="translate(0,2) scale(0.5)"/>
+</g>
+<text x="72" y="34" font-family="Georgia, serif" font-size="20" font-weight="700" fill="#FF8DA1">Alem&#39;s</text>
+<text x="72" y="56" font-family="Georgia, serif" font-size="20" font-weight="700" fill="#5A4A6B">Store</text>
+</svg>

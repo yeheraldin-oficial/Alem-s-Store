@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+<!-- Bandera simplificada -->
+<rect x="40" y="60" width="60" height="20" fill="#D91023"/>
+<rect x="40" y="80" width="60" height="40" fill="#FFFFFF"/>
+<rect x="40" y="120" width="60" height="20" fill="#D91023"/>
+<!-- Escudo simplificado -->
+<circle cx="70" cy="100" r="8" fill="#FFD93C" stroke="#5A4A6B" stroke-width="1.5"/>
+<!-- Texto -->
+<text x="120" y="105" font-family="Georgia, serif" font-size="14" font-weight="700" fill="#5A4A6B">Hecho</text>
+<text x="120" y="122" font-family="Georgia, serif" font-size="14" font-weight="700" fill="#5A4A6B">en Perú</text>
+<!-- Corazón decorativo -->
+<path d="M 100 155 C 95 150 88 150 88 158 C 88 165 95 170 100 175 C 105 170 112 165 112 158 C 112 150 105 150 100 155 Z" fill="#FF8DA1" stroke="#5A4A6B" stroke-width="1.5"/>
+</svg>

@@ -1,0 +1,71 @@
+// Prisma schema - Tienda virtual de ropa infantil "Pequeño Sol"
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Product {
+  id          String   @id
+  name        String
+  description String
+  price       Float
+  category    String
+  image       String
+  stock       Int
+  active      Boolean  @default(true)
+  sizes       String   @default("") // separadas por coma: "0-3m,3-6m,6-12m"
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Coupon {
+  id          String   @id @default(cuid())
+  code        String   @unique
+  type        String   // "percentage" | "fixed"
+  value       Float
+  minAmount   Float    @default(0)
+  description String?
+  active      Boolean  @default(true)
+  uses        Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Order {
+  id           String   @id @default(cuid())
+  code         String   @unique // código corto visible: PS-XXXX
+  customerName String
+  whatsapp     String
+  deliveryMode String   // "delivery" | "pickup"
+  address      String?
+  reference    String?
+  items        String   // JSON: [{id,name,price,qty,image,size}]
+  subtotal     Float
+  discount     Float    @default(0)
+  total        Float
+  couponCode   String?
+  paymentMethod String? // "whatsapp" | "card" | "yape"
+  paymentStatus String  @default("pending") // pending | paid
+  status       String   @default("new") // new, confirmed, paid, shipped, delivered, cancelled
+  notes        String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model AdminUser {
+  id        String @id @default(cuid())
+  username  String @unique
+  password  String
+  createdAt DateTime @default(now())
+}
+
+model Setting {
+  id    String @id
+  key   String @unique
+  value String
+}
