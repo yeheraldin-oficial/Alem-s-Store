@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
+import { ensureDb } from '@/lib/ensure-db'
 
 function genCode() {
   const n = Math.floor(1000 + Math.random() * 9000)
@@ -8,6 +9,7 @@ function genCode() {
 
 // GET /api/orders?status=
 export async function GET(req: NextRequest) {
+  await ensureDb()
   const { searchParams } = new URL(req.url)
   const status = searchParams.get('status')
   const where: Record<string, unknown> = {}
@@ -21,6 +23,7 @@ export async function GET(req: NextRequest) {
 
 // POST /api/orders  (crear pedido desde el checkout)
 export async function POST(req: NextRequest) {
+  await ensureDb()
   const body = await req.json()
   const {
     customerName,

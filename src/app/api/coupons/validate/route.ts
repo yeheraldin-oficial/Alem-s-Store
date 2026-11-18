@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
+import { ensureDb } from '@/lib/ensure-db'
 
 // POST /api/coupons/validate  { code, subtotal }
 export async function POST(req: NextRequest) {
+  await ensureDb()
   const { code, subtotal } = await req.json()
   if (!code) {
     return NextResponse.json({ valid: false, message: 'Ingresa un código.' })

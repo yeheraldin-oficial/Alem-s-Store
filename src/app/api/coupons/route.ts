@@ -1,14 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
+import { ensureDb } from '@/lib/ensure-db'
 
 // GET /api/coupons
 export async function GET() {
+  await ensureDb()
   const coupons = await db.coupon.findMany({ orderBy: { createdAt: 'desc' } })
   return NextResponse.json({ coupons })
 }
 
 // POST /api/coupons  (admin: crear cupón)
 export async function POST(req: NextRequest) {
+  await ensureDb()
   const body = await req.json()
   if (!body.code || !body.type || body.value == null) {
     return NextResponse.json({ error: 'Faltan campos' }, { status: 400 })

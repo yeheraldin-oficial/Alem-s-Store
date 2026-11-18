@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
+import { ensureDb } from '@/lib/ensure-db'
 
 // GET /api/products?category=&active=&q=
 export async function GET(req: NextRequest) {
+  await ensureDb()
   const { searchParams } = new URL(req.url)
   const category = searchParams.get('category')
   const active = searchParams.get('active')
@@ -23,6 +25,7 @@ export async function GET(req: NextRequest) {
 
 // POST /api/products  (admin)
 export async function POST(req: NextRequest) {
+  await ensureDb()
   const body = await req.json()
   if (!body.id || !body.name || body.price == null) {
     return NextResponse.json({ error: 'Faltan campos obligatorios' }, { status: 400 })

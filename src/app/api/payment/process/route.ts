@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
+import { ensureDb } from '@/lib/ensure-db'
 
 // POST /api/payment/process  (simulación de pasarela en modo prueba)
 // Body: { amount, method, cardLast4?, itemsCount, customerName }
 // method: 'mercado_pago' | 'yape' | 'plin'
 export async function POST(req: NextRequest) {
+  await ensureDb()
   const body = await req.json()
   const { amount, method } = body
 

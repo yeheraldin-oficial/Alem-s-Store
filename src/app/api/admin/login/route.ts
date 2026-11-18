@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
+import { ensureDb } from '@/lib/ensure-db'
 
 // POST /api/admin/login  { username, password }
 export async function POST(req: NextRequest) {
+  await ensureDb()
   const { username, password } = await req.json()
   if (!username || !password) {
     return NextResponse.json({ ok: false, error: 'Faltan credenciales' }, { status: 400 })
