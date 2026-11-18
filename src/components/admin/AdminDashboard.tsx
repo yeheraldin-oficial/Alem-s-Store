@@ -5,6 +5,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogFooter,
 } from '@/components/ui/dialog'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -118,7 +119,12 @@ export function AdminDashboard({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="flex max-h-[95vh] w-[95vw] max-w-5xl flex-col overflow-hidden p-0" aria-describedby={undefined}>
+      <DialogContent
+        className="flex max-h-[95vh] w-[95vw] max-w-5xl flex-col overflow-hidden p-0"
+        aria-describedby={undefined}
+        onInteractOutside={(e) => e.preventDefault()}
+        onPointerDownOutside={(e) => e.preventDefault()}
+      >
         <DialogHeader className="shrink-0 border-b border-[var(--brand-pink-dark)]/20 bg-[var(--brand-cream)] px-3 py-2 md:px-5 md:py-3">
           <DialogTitle className="flex items-center justify-between text-[var(--brand-pink-dark)]">
             <span className="flex items-center gap-2 text-sm md:text-base">
@@ -186,6 +192,16 @@ function OrdersTab() {
     return (data.orders || []) as Order[]
   }, [filter])
 
+  const reload = useCallback(async () => {
+    setLoading(true)
+    try {
+      const ords = await load()
+      setOrders(ords)
+    } finally {
+      setLoading(false)
+    }
+  }, [load])
+
   useEffect(() => {
     let cancelled = false
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -209,7 +225,7 @@ function OrdersTab() {
       body: JSON.stringify({ status }),
     })
     toast.success(`Pedido pasado a: ${STATUS_LABELS[status]}`)
-    load()
+    reload()
   }
 
   const stats = {
@@ -381,6 +397,16 @@ function ProductsTab() {
     return (data.products || []) as Product[]
   }, [])
 
+  const reload = useCallback(async () => {
+    setLoading(true)
+    try {
+      const prods = await load()
+      setProducts(prods)
+    } finally {
+      setLoading(false)
+    }
+  }, [load])
+
   useEffect(() => {
     let cancelled = false
     // eslint-disable-next-line react-hooks/set-state-in-effect
@@ -404,7 +430,7 @@ function ProductsTab() {
       body: JSON.stringify({ active: !p.active }),
     })
     toast.success(`${p.name}: ${!p.active ? 'Activo' : 'Inactivo'}`)
-    load()
+    reload()
   }
 
   const quickStock = async (p: Product, delta: number) => {
@@ -414,14 +440,14 @@ function ProductsTab() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ stock: newStock }),
     })
-    load()
+    reload()
   }
 
   const remove = async (p: Product) => {
     if (!confirm(`¿Eliminar "${p.name}"?`)) return
     await fetch(`/api/products/${p.id}`, { method: 'DELETE' })
     toast.success('Producto eliminado')
-    load()
+    reload()
   }
 
   return (
@@ -518,7 +544,7 @@ function ProductsTab() {
           onSaved={() => {
             setEditing(null)
             setShowNew(false)
-            load()
+            reload()
           }}
         />
       )}
@@ -537,14 +563,14 @@ function ProductEditor({
 }) {
   const [form, setForm] = useState<Product>(
     product || {
-      id: '',
+      id: `P${Date.now().toString().slice(-3)}`,
       name: '',
-      description: '',
-      price: 0,
+      description: 'Descripción del producto...',
+      price: 35,
       category: BUSINESS.categories[0],
       image: '/products/body-bebe.jpg',
-      stock: 0,
-      sizes: '',
+      stock: 10,
+      sizes: 'Único',
       active: true,
     }
   )
@@ -553,6 +579,10 @@ function ProductEditor({
   const save = async () => {
     if (!form.id || !form.name) {
       toast.error('ID y nombre son obligatorios')
+      return
+    }
+    if (form.price <= 0) {
+      toast.error('El precio debe ser mayor a 0')
       return
     }
     setSaving(true)
@@ -569,14 +599,13 @@ function ProductEditor({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" onClick={onClose}>
-      <div
-        className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl bg-white p-5 shadow-2xl"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <h3 className="mb-3 text-lg font-bold text-[var(--brand-pink-dark)]">
-          {product ? 'Editar producto' : 'Nuevo producto'}
-        </h3>
+    <Dialog open={true} onOpenChange={(v) => !v && onClose()}>
+      <DialogContent className="max-h-[90vh] w-[95vw] overflow-y-auto sm:max-w-lg" aria-describedby={undefined}>
+        <DialogHeader>
+          <DialogTitle className="text-[var(--brand-pink-dark)]">
+            {product ? 'Editar producto' : 'Nuevo producto'}
+          </DialogTitle>
+        </DialogHeader>
         <div className="space-y-3">
           <div className="grid grid-cols-3 gap-2">
             <div className="col-span-1">
@@ -590,7 +619,11 @@ function ProductEditor({
             </div>
             <div className="col-span-2">
               <Label>Nombre *</Label>
-              <Input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
+              <Input
+                value={form.name}
+                onChange={(e) => setForm({ ...form, name: e.target.value })}
+                placeholder="Ej: Body de bebé orgánico"
+              />
             </div>
           </div>
           <div>
@@ -599,6 +632,7 @@ function ProductEditor({
               rows={2}
               value={form.description}
               onChange={(e) => setForm({ ...form, description: e.target.value })}
+              placeholder="Describe el producto..."
             />
           </div>
           <div className="grid grid-cols-3 gap-2">
@@ -608,6 +642,7 @@ function ProductEditor({
                 type="number"
                 value={form.price}
                 onChange={(e) => setForm({ ...form, price: Number(e.target.value) })}
+                placeholder="35"
               />
             </div>
             <div>
@@ -616,6 +651,7 @@ function ProductEditor({
                 type="number"
                 value={form.stock}
                 onChange={(e) => setForm({ ...form, stock: Number(e.target.value) })}
+                placeholder="10"
               />
             </div>
             <div>
@@ -658,16 +694,16 @@ function ProductEditor({
             <Label>Activo (visible en la tienda)</Label>
           </div>
         </div>
-        <div className="mt-4 flex justify-end gap-2">
+        <DialogFooter className="gap-2">
           <Button variant="outline" onClick={onClose}>
             Cancelar
           </Button>
           <Button onClick={save} disabled={saving} className="bg-[var(--brand-pink-dark)] text-white">
             {saving ? 'Guardando...' : 'Guardar'}
           </Button>
-        </div>
-      </div>
-    </div>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   )
 }
 
@@ -682,6 +718,16 @@ function CouponsTab() {
     const data = await res.json()
     return (data.coupons || []) as Coupon[]
   }, [])
+
+  const reload = useCallback(async () => {
+    setLoading(true)
+    try {
+      const cps = await load()
+      setCoupons(cps)
+    } finally {
+      setLoading(false)
+    }
+  }, [load])
 
   useEffect(() => {
     let cancelled = false
@@ -706,14 +752,14 @@ function CouponsTab() {
       body: JSON.stringify({ active: !c.active }),
     })
     toast.success(`${c.code}: ${!c.active ? 'Activo' : 'Inactivo'}`)
-    load()
+    reload()
   }
 
   const remove = async (c: Coupon) => {
     if (!confirm(`¿Eliminar cupón ${c.code}?`)) return
     await fetch(`/api/coupons/${c.id}`, { method: 'DELETE' })
     toast.success('Cupón eliminado')
-    load()
+    reload()
   }
 
   return (
@@ -786,7 +832,7 @@ function CouponsTab() {
           onClose={() => setShowNew(false)}
           onSaved={() => {
             setShowNew(false)
-            load()
+            reload()
           }}
         />
       )}
@@ -827,9 +873,11 @@ function CouponEditor({ onClose, onSaved }: { onClose: () => void; onSaved: () =
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4" onClick={onClose}>
-      <div className="w-full max-w-md rounded-2xl bg-white p-5 shadow-2xl" onClick={(e) => e.stopPropagation()}>
-        <h3 className="mb-3 text-lg font-bold text-[var(--brand-pink-dark)]">Nuevo cupón</h3>
+    <Dialog open={true} onOpenChange={(v) => !v && onClose()}>
+      <DialogContent className="w-[95vw] sm:max-w-md" aria-describedby={undefined}>
+        <DialogHeader>
+          <DialogTitle className="text-[var(--brand-pink-dark)]">Nuevo cupón</DialogTitle>
+        </DialogHeader>
         <div className="space-y-3">
           <div>
             <Label>Código *</Label>
@@ -882,16 +930,16 @@ function CouponEditor({ onClose, onSaved }: { onClose: () => void; onSaved: () =
             <Label>Activo</Label>
           </div>
         </div>
-        <div className="mt-4 flex justify-end gap-2">
+        <DialogFooter className="gap-2">
           <Button variant="outline" onClick={onClose}>
             Cancelar
           </Button>
           <Button onClick={save} disabled={saving} className="bg-[var(--brand-pink-dark)] text-white">
             {saving ? 'Guardando...' : 'Crear cupón'}
           </Button>
-        </div>
-      </div>
-    </div>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   )
 }
 
