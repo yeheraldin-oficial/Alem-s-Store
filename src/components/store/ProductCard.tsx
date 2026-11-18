@@ -124,9 +124,9 @@ export function ProductCard({ product, index = 0 }: { product: Product; index?: 
           </Badge>
         </div>
 
-        <div className="flex flex-1 flex-col p-4">
-          <h3 className="line-clamp-2 font-bold text-foreground">{product.name}</h3>
-          <p className="mt-1 line-clamp-2 text-xs text-muted-foreground md:text-sm">
+        <div className="flex flex-1 flex-col p-3 md:p-4">
+          <h3 className="line-clamp-2 text-sm font-bold text-foreground md:text-base">{product.name}</h3>
+          <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">
             {product.description}
           </p>
 

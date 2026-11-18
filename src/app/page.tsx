@@ -46,6 +46,20 @@ export default function Home() {
     return (data.products || []) as Product[]
   }, [category, query])
 
+  // Auto-inicializar la base de datos al cargar (para Vercel)
+  useEffect(() => {
+    fetch('/api/init', { method: 'POST' })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.ok) {
+          console.log('DB init:', data.message)
+        }
+      })
+      .catch(() => {
+        // Silencioso - no bloquea la UI
+      })
+  }, [])
+
   useEffect(() => {
     let cancelled = false
     // eslint-disable-next-line react-hooks/set-state-in-effect

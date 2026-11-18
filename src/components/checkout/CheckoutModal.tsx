@@ -347,7 +347,7 @@ export function CheckoutModal({ open, onOpenChange }: CheckoutModalProps) {
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="max-h-[92vh] overflow-y-auto sm:max-w-lg">
+      <DialogContent className="max-h-[92vh] w-[95vw] overflow-y-auto sm:max-w-lg">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-[var(--brand-pink-dark)]">
             {step === 'exito' ? (
@@ -602,15 +602,13 @@ export function CheckoutModal({ open, onOpenChange }: CheckoutModalProps) {
                     Sin comisión
                   </span>
                 </div>
-                <div className="flex items-center gap-4 rounded-xl bg-white p-3">
+                <div className="flex flex-col items-center gap-4 rounded-xl bg-white p-3 sm:flex-row">
                   {/* QR Yape */}
                   <div className="shrink-0">
                     <img
                       src="/yape-qr.svg"
                       alt="QR Yape"
-                      width={120}
-                      height={140}
-                      className="h-auto w-[120px] rounded-lg border-2 border-[#7D3494]/20"
+                      className="h-auto w-[100px] rounded-lg border-2 border-[#7D3494]/20 sm:w-[120px]"
                     />
                   </div>
                   <div className="flex-1 text-sm">

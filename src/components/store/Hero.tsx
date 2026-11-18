@@ -95,7 +95,7 @@ export function Hero({ onVerCatalogo }: { onVerCatalogo: () => void }) {
             {/* Mini stats */}
             <motion.div
               variants={fadeInUp}
-              className="mt-8 flex items-center justify-center gap-6 md:justify-start"
+              className="mt-8 flex items-center justify-center gap-4 text-center md:justify-start md:gap-6"
             >
               <div>
                 <p className="text-2xl font-extrabold text-[var(--brand-pink-dark)]">8+</p>

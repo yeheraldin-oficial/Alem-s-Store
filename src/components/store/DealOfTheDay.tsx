@@ -96,7 +96,7 @@ export function DealOfTheDay() {
           {/* Countdown */}
           <div className="flex items-center gap-2">
             <Clock className="h-5 w-5" />
-            <div className="flex gap-1.5">
+            <div className="flex gap-1 sm:gap-1.5">
               {[
                 { label: 'Hrs', value: timeLeft.hours },
                 { label: 'Min', value: timeLeft.minutes },
@@ -106,12 +106,12 @@ export function DealOfTheDay() {
                   key={unit.label}
                   initial={{ scale: 0.9 }}
                   whileInView={{ scale: 1 }}
-                  className="flex flex-col items-center rounded-xl bg-white/20 px-3 py-2 backdrop-blur"
+                  className="flex flex-col items-center rounded-xl bg-white/20 px-2 py-1.5 backdrop-blur sm:px-3 sm:py-2"
                 >
-                  <span className="text-xl font-extrabold tabular-nums">
+                  <span className="text-base font-extrabold tabular-nums sm:text-xl">
                     {String(unit.value).padStart(2, '0')}
                   </span>
-                  <span className="text-[10px] uppercase opacity-90">{unit.label}</span>
+                  <span className="text-[9px] uppercase opacity-90 sm:text-[10px]">{unit.label}</span>
                 </motion.div>
               ))}
             </div>
